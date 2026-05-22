@@ -1,1 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farmacocinética - Modelos Farmacocinéticos</title>
 
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    :root{
+      --bg:#f3f8fc;
+      --card:#ffffff;
+      --text:#1e293b;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary2:#06b6d4;
+      --soft:#eaf4ff;
+      --border:#dbe7f3;
+      --ok:#16a34a;
+      --bad:#dc2626;
+      --warning:#f59e0b;
+      --radius:20px;
+      --shadow:0 14px 34px rgba(15,23,42,.08);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:linear-gradient(135deg,#f8fbff,#eef7ff);
+      line-height:1.65;
+    }
+
+    header{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:white;
+      padding:36px 18px;
+      text-align:center;
+    }
+
+    header h1{
+      margin:0;
+      font-size:clamp(1.9rem,4vw,3.3rem);
+      font-weight:900;
+    }
+
+    header p{
+      max-width:1000px;
+      margin:10px auto 0;
+      opacity:.96;
+      font-size:1.05rem;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:290px 1fr;
+      gap:22px;
+      max-width:1500px;
+      margin:24px auto;
+      padding:0 18px 38px;
+    }
+
+    aside{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      height:max-content;
+      position:sticky;
+      top:16px;
+    }
+
+    .brand{
+      font-weight:900;
+      color:var(--primary);
+      margin:0 0 14px;
+      font-size:1.05rem;
+    }
+
+    .tab{
+      width:100%;
+      border:0;
+      background:transparent;
+      color:var(--text);
+      text-align:left;
+      padding:13px 14px;
+      border-radius:15px;
+      cursor:pointer;
+      font-weight:750;
+      margin:4px 0;
+      transition:.2s;
+    }
+
+    .tab:hover{
+      background:var(--soft);
+      color:var(--primary);
+    }
+
+    .tab.active{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:white;
+    }
+
+    main{min-width:0}
+
+    section{
+      display:none;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:clamp(18px,3vw,36px);
+      margin-bottom:22px;
+    }
+
+    section.active{
+      display:block;
+      animation:fade .25s ease;
+    }
+
+    @keyframes fade{
+      from{opacity:0;transform:translateY(8px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    h2{
+      margin-top:0;
+      color:#1d4ed8;
+      font-size:clamp(1.5rem,3vw,2.2rem);
+    }
+
+    h3{
+      color:#0f766e;
+      margin-top:30px;
+    }
+
+    h4{
+      color:#334155;
+      margin-bottom:6px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .card{
+      background:#fbfdff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .note{
+      background:#f8fafc;
+      border-left:5px solid var(--primary);
+      padding:14px;
+      border-radius:12px;
+      margin:16px 0;
+    }
+
+    .warning{
+      background:#fff7ed;
+      border-left:5px solid var(--warning);
+      padding:14px;
+      border-radius:12px;
+      margin:16px 0;
+    }
+
+    .formula{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      overflow:auto;
+      margin:10px 0;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .pill{
+      display:inline-block;
+      background:#dbeafe;
+      color:#1e40af;
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:.82rem;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:14px 0;
+      display:block;
+      overflow-x:auto;
+    }
+
+    th,td{
+      border:1px solid var(--border);
+      padding:9px;
+      text-align:left;
+    }
+
+    th{background:#eff6ff}
+
+    .progress{
+      height:12px;
+      background:#e2e8f0;
+      border-radius:999px;
+      overflow:hidden;
+      margin:10px 0 18px;
+    }
+
+    .bar{
+      height:100%;
+      background:linear-gradient(90deg,var(--primary),var(--primary2));
+      width:0%;
+      transition:.2s;
+    }
+
+    .option{
+      display:block;
+      width:100%;
+      text-align:left;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      border-radius:13px;
+      padding:12px;
+      margin:8px 0;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    .option:hover{background:#edf6ff}
+    .option.selected{border-color:var(--primary);background:#dbeafe}
+    .option.correct{border-color:var(--ok);background:#dcfce7}
+    .option.incorrect{border-color:var(--bad);background:#fee2e2}
+
+    .feedback{
+      display:none;
+      margin-top:12px;
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:13px;
+    }
+
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button.action{
+      border:0;
+      border-radius:13px;
+      padding:11px 16px;
+      font-weight:850;
+      cursor:pointer;
+    }
+
+    .primary{background:var(--primary);color:white}
+    .secondary{background:#e2e8f0;color:#0f172a}
+    .danger{background:#fee2e2;color:#991b1b}
+
+    details{
+      border:1px solid var(--border);
+      background:#f8fafc;
+      border-radius:14px;
+      padding:13px;
+      margin-top:12px;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:850;
+      color:var(--primary);
+    }
+
+    .success{color:var(--ok);font-weight:900}
+    .error{color:var(--bad);font-weight:900}
+
+    .problem-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .problem{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      background:#ffffff;
+    }
+
+    input{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:11px;
+      font-size:1rem;
+      background:white;
+      margin-top:6px;
+    }
+
+    footer{
+      text-align:center;
+      color:var(--muted);
+      padding:22px;
+    }
+
+    @media(max-width:920px){
+      .layout{grid-template-columns:1fr}
+      aside{position:static}
+      .navgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+      .tab{margin:0}
+      .grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:560px){
+      .navgrid{grid-template-columns:1fr}
+      .btns{flex-direction:column}
+      button.action{width:100%}
+      section{padding:18px 14px}
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Farmacocinética</h1>
+  <p>Modelos farmacocinéticos: monocompartimental IV, administración extravasal/oral, modelo bicompartimental y modelo de pre-equilibrio.</p>
+</header>
+
+<div class="layout">
+  <aside>
+    <p class="brand">Menú del curso</p>
+    <div class="navgrid">
+      <button class="tab active" data-target="resumen-general">1. Resumen general</button>
+      <button class="tab" data-target="resumen-detallado">2. Resumen detallado</button>
+      <button class="tab" data-target="contenido-completo">3. Contenido completo</button>
+      <button class="tab" data-target="quiz">4. Quiz de 100 preguntas</button>
+      <button class="tab" data-target="problemas">5. Problemas prácticos</button>
+    </div>
+  </aside>
+
+  <main>
+    <section id="resumen-general" class="active">
+      <h2>Resumen general</h2>
+
+      <div class="grid">
+        <div class="card">
+          <h3>¿Qué es la farmacocinética?</h3>
+          <p>La farmacocinética estudia la evolución temporal del fármaco dentro del organismo. Permite describir, mediante modelos matemáticos, cómo cambian las concentraciones plasmáticas después de administrar una dosis.</p>
+        </div>
+
+        <div class="card">
+          <h3>Procesos principales</h3>
+          <ul>
+            <li><b>Absorción:</b> entrada del fármaco desde el sitio de administración.</li>
+            <li><b>Distribución:</b> transferencia del fármaco entre sangre y tejidos.</li>
+            <li><b>Eliminación:</b> salida del fármaco por metabolismo, excreción renal, biliar u otras rutas.</li>
+            <li><b>Exposición:</b> cantidad total de fármaco disponible en el tiempo, representada por el ABC/AUC.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Parámetros clave</h3>
+          <ul>
+            <li><b>Vd:</b> volumen aparente de distribución.</li>
+            <li><b>CL:</b> aclaramiento o depuración.</li>
+            <li><b>t½:</b> vida media de eliminación.</li>
+            <li><b>ABC/AUC:</b> área bajo la curva concentración-tiempo.</li>
+            <li><b>β:</b> constante de velocidad de eliminación.</li>
+            <li><b>Ka:</b> constante de velocidad de absorción.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Modelos estudiados</h3>
+          <ul>
+            <li><b>Monocompartimental IV:</b> distribución instantánea y eliminación de primer orden.</li>
+            <li><b>Monocompartimental oral:</b> incluye absorción y eliminación.</li>
+            <li><b>Bicompartimental:</b> compartimento central y periférico.</li>
+            <li><b>Pre-equilibrio:</b> simplifica un bicompartimental cuando la distribución es muy rápida.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Idea central:</b> los modelos farmacocinéticos convierten datos de concentración sanguínea en parámetros útiles para interpretar la eliminación, distribución, absorción y exposición del fármaco.
+      </div>
+    </section>
+
+    <section id="resumen-detallado">
+      <h2>Resumen detallado</h2>
+
+      <h3>1. Modelo monocompartimental con administración intravenosa</h3>
+      <p>El modelo monocompartimental considera el organismo como un solo compartimento. Cuando el fármaco se administra por vía intravenosa, entra directa y completamente al organismo. Se asume una distribución instantánea y una eliminación de primer orden.</p>
+
+      <div class="formula">$$Cpt = B_0 e^{-\beta t}$$</div>
+      <p>Donde \(B_0\) representa la concentración inicial en equilibrio y \(\beta\) es la constante de velocidad de eliminación.</p>
+
+      <div class="formula">$$\ln Cpt = \ln B_0 - \beta t$$</div>
+      <p>En papel semilogarítmico, un modelo monocompartimental genera una línea recta, lo cual indica comportamiento monoexponencial.</p>
+
+      <h3>2. Vida media de eliminación</h3>
+      <p>La semivida o vida media de eliminación mide la rapidez con que el fármaco es eliminado del cuerpo. En cinética de primer orden:</p>
+      <div class="formula">$$t_{1/2}=\frac{0.693}{\beta}$$</div>
+
+      <div class="note">
+        En aproximadamente 5 vidas medias se alcanza más del 97% del estado estacionario cuando se administran dosis repetidas o una infusión continua.
+      </div>
+
+      <h3>3. Volumen aparente de distribución</h3>
+      <p>El volumen aparente de distribución es un volumen hipotético que relaciona la cantidad de fármaco en el cuerpo con la concentración plasmática.</p>
+      <div class="formula">$$Vd=\frac{Qbt}{Cpt}$$</div>
+
+      <h4>Método de balance de masas</h4>
+      <div class="formula">$$Vd=\frac{Dosis-Et}{Cpt}$$</div>
+
+      <h4>Método por extrapolación</h4>
+      <div class="formula">$$Vd=\frac{Dosis}{B_0}$$</div>
+
+      <h4>Método de área o beta</h4>
+      <div class="formula">$$Vd_{area}=Vd_{\beta}=\frac{D}{ABC_{0}^{\infty}\cdot \beta}$$</div>
+
+      <h3>4. Área bajo la curva: ABC/AUC</h3>
+      <p>El ABC se determina mediante el método de los trapecios. Se suman las áreas entre puntos consecutivos y se agrega el área terminal hasta infinito.</p>
+
+      <div class="formula">$$ABC_{t_1}^{t_2}=\frac{C_1+C_2}{2}(t_2-t_1)$$</div>
+      <div class="formula">$$ABC_{n}^{\infty}=\frac{C_n}{\beta}$$</div>
+      <div class="formula">$$ABC_{0}^{\infty}=ABC_{0}^{n}+ABC_{n}^{\infty}$$</div>
+
+      <h3>5. Aclaramiento</h3>
+      <p>El aclaramiento expresa la velocidad de eliminación en términos de volumen por unidad de tiempo. Representa el volumen hipotético de plasma depurado del fármaco por unidad de tiempo.</p>
+
+      <div class="formula">$$CL=Vd\cdot \beta$$</div>
+      <div class="formula">$$CL=\frac{Dosis}{ABC_{0}^{\infty}}$$</div>
+      <div class="formula">$$CL=\frac{dE/dt}{Cpt}$$</div>
+
+      <p>El aclaramiento total puede entenderse como la suma de aclaramientos renal, metabólico, biliar y otros.</p>
+
+      <h3>6. Relación entre parámetros</h3>
+      <div class="formula">$$CL=Vd\cdot \beta$$</div>
+      <div class="formula">$$CL=Vd\cdot \frac{0.693}{t_{1/2}}$$</div>
+      <div class="formula">$$t_{1/2}=\frac{Vd\cdot 0.693}{CL}$$</div>
+
+      <div class="note">
+        A mayor volumen de distribución, mayor tendencia a prolongar la vida media. A mayor aclaramiento, menor tendencia a prolongar la vida media.
+      </div>
+
+      <h3>7. Administración extravasal/oral</h3>
+      <p>En el modelo monocompartimental extravasal intervienen procesos de liberación, absorción y eliminación. El fármaco primero se encuentra en un sitio de absorción y luego entra al compartimento central.</p>
+
+      <div class="formula">$$\frac{dQb}{dt}=Ka\cdot Qat-\beta\cdot Qbt$$</div>
+      <div class="formula">$$\frac{dE}{dt}=\beta\cdot Qbt$$</div>
+
+      <p>La ecuación matemática característica es la función de Bateman:</p>
+      <div class="formula">$$Cpt=\frac{F\cdot D\cdot Ka}{Vd(Ka-\beta)}(e^{-\beta t}-e^{-Ka t})$$</div>
+
+      <p>También puede escribirse como:</p>
+      <div class="formula">$$Cpt=B_0(e^{-\beta t}-e^{-Ka t})$$</div>
+
+      <p>En esta ecuación, \(B_0\) es un artefacto matemático para el cálculo, no una concentración real a tiempo cero.</p>
+
+      <h3>8. Método de residuales para absorción</h3>
+      <ol>
+        <li>Graficar los datos de concentración sanguínea.</li>
+        <li>Identificar la fase terminal en escala semilogarítmica.</li>
+        <li>Realizar regresión exponencial de la fase de eliminación.</li>
+        <li>Retroproyectar la línea terminal a los tiempos iniciales.</li>
+        <li>Calcular residuales: \(Rt=Cpt'-Cpt\).</li>
+        <li>Graficar residuales contra tiempo.</li>
+        <li>Realizar regresión exponencial de los residuales.</li>
+        <li>Obtener \(Ka\) a partir de la pendiente.</li>
+      </ol>
+
+      <h3>9. Flip-flop y periodo de latencia</h3>
+      <p>El fenómeno flip-flop ocurre cuando la velocidad de entrada es más lenta que la velocidad de salida, es decir, cuando \(Ka << Ke\). El periodo de latencia es el tiempo que demora el fármaco en aparecer en sangre.</p>
+
+      <div class="formula">$$t_0=\frac{\ln(A_0/B_0)}{Ka-\beta}$$</div>
+
+      <h3>10. Modelo bicompartimental</h3>
+      <p>El modelo bicompartimental considera un compartimento central y uno periférico. El fármaco se distribuye lentamente hacia otros tejidos, con transferencia bidireccional controlada por \(K_{12}\) y \(K_{21}\).</p>
+
+      <div class="formula">$$Cpt=A_0e^{-\alpha t}+B_0e^{-\beta t}$$</div>
+
+      <p>\(\alpha\) representa la fase de distribución y \(\beta\) la fase terminal de eliminación.</p>
+
+      <h3>11. Microconstantes</h3>
+      <div class="formula">$$C_0=A_0+B_0$$</div>
+      <div class="formula">$$K_{21}=\frac{A_0\beta+B_0\alpha}{C_0}$$</div>
+      <div class="formula">$$K_e=\frac{\alpha\beta}{K_{21}}$$</div>
+      <div class="formula">$$K_{12}=\alpha+\beta-K_e-K_{21}$$</div>
+
+      <h3>12. Volúmenes en bicompartimental</h3>
+      <div class="formula">$$Vc=\frac{Dosis}{C_0}$$</div>
+      <div class="formula">$$Vp=Vc\cdot\frac{K_{12}}{K_{21}}$$</div>
+      <div class="formula">$$Vee=Vc+Vp=Vc\left(1+\frac{K_{12}}{K_{21}}\right)$$</div>
+
+      <h3>13. Pre-equilibrio</h3>
+      <p>El modelo de pre-equilibrio se aplica cuando la fase de distribución es muy rápida y puede ser obviada, especialmente si el muestreo inicia tarde y no se observa la fase inicial.</p>
+
+      <div class="formula">$$\frac{K_{12}+K_{21}}{K_e}>20$$</div>
+
+      <p>Si se cumple esta relación, puede usarse un modelo más simple:</p>
+      <div class="formula">$$Cpt=B_0e^{-\beta t}$$</div>
+    </section>
+
+    <section id="contenido-completo">
+      <h2>Contenido completo tipo wiki</h2>
+
+      <h3>Módulo 2. Modelos farmacocinéticos</h3>
+      <p>El módulo se centra en el desarrollo de modelos y ecuaciones para estimar concentraciones y parámetros farmacocinéticos. El objetivo es interpretar datos de concentraciones sanguíneas, determinar constantes de velocidad y relacionar los parámetros de absorción, distribución y eliminación.</p>
+
+      <h3>2.1 Modelo monocompartimental con administración intravenosa</h3>
+      <p>El modelo monocompartimental considera el organismo como un solo compartimento. La administración intravenosa deposita el fármaco directa y completamente en el organismo. La distribución se asume instantánea y, a medida que pasa el tiempo, el fármaco se elimina por los órganos responsables de su salida.</p>
+
+      <h4>Modelo físico</h4>
+      <p>El fármaco entra por vía intravenosa al compartimento de volumen \(Vd\). La cantidad en el cuerpo se representa como \(Qbt\), la concentración como \(Cpt\) y la eliminación como \(Et\). La constante de eliminación se representa como \(\beta\).</p>
+
+      <div class="formula">$$Cpt=B_0e^{-\beta t}$$</div>
+
+      <h4>Perfil farmacocinético</h4>
+      <p>En escala aritmética, el perfil concentración-tiempo es curvo descendente. En escala semilogarítmica, el perfil se convierte en una línea recta si existe un solo compartimento y eliminación de primer orden.</p>
+
+      <div class="formula">$$\ln Cpt=\ln B_0-\beta t$$</div>
+
+      <h4>Determinación de parámetros</h4>
+      <ul>
+        <li>\(\beta\): se obtiene de la pendiente por regresión lineal o exponencial.</li>
+        <li>\(t_{1/2}\): mide la rapidez con que el fármaco se elimina.</li>
+        <li>\(Vd\): indica la extensión aparente de distribución.</li>
+        <li>\(CL\): expresa la eficiencia del organismo para eliminar el fármaco.</li>
+      </ul>
+
+      <div class="formula">$$t_{1/2}=\frac{0.693}{\beta}$$</div>
+
+      <h4>Métodos para determinar Vd</h4>
+      <table>
+        <tr><th>Método</th><th>Ecuación</th><th>Uso</th></tr>
+        <tr><td>Balance de masas</td><td>\(Vd=\frac{Dosis-Et}{Cpt}\)</td><td>Requiere cantidad eliminada a tiempo t.</td></tr>
+        <tr><td>Extrapolación</td><td>\(Vd=\frac{Dosis}{B_0}\)</td><td>Usa concentración inicial extrapolada.</td></tr>
+        <tr><td>Área o beta</td><td>\(Vd=\frac{D}{ABC_0^\infty\cdot\beta}\)</td><td>Método modelo independiente.</td></tr>
+      </table>
+
+      <h4>Cálculo de ABC</h4>
+      <p>El área bajo la curva se calcula por trapecios. Para usar este método se requiere una concentración a tiempo cero, datos de concentraciones en los tiempos de muestreo y una constante de eliminación para calcular el área terminal.</p>
+
+      <div class="formula">$$ABC_{t_1}^{t_2}=\frac{C_1+C_2}{2}(t_2-t_1)$$</div>
+      <div class="formula">$$ABC_n^\infty=\frac{C_n}{\beta}$$</div>
+
+      <h4>Ejemplo monocompartimental IV</h4>
+      <p>Para una dosis IV de 75 mg, se obtuvo por regresión:</p>
+      <div class="formula">$$Cpt=1.663e^{-0.219t}$$</div>
+      <p>Con esta ecuación:</p>
+      <ul>
+        <li>\(t_{1/2}=0.693/0.219=3.16\ h\)</li>
+        <li>\(Vd_{extrap}=75/1.663=45.1\ L\)</li>
+        <li>\(ABC_{0}^{\infty}=7.815\ mg\cdot h/L\)</li>
+        <li>\(Vd_{area}=75/(7.815\cdot0.219)=43.8\ L\)</li>
+        <li>\(CL=75/7.815=9.60\ L/h=160\ mL/min\)</li>
+      </ul>
+
+      <h3>2.2 Modelo monocompartimental con administración extravasal/oral</h3>
+      <p>En el modelo extravasal intervienen liberación y absorción. A diferencia de la vía IV, el fármaco no entra directamente al compartimento central; primero se encuentra en el sitio de absorción.</p>
+
+      <h4>Variables del modelo</h4>
+      <ul>
+        <li>\(Qat\): cantidad en el sitio de absorción.</li>
+        <li>\(Qbt\): cantidad en el cuerpo o compartimento central.</li>
+        <li>\(Cpt\): concentración plasmática o sanguínea.</li>
+        <li>\(Vd\): volumen de distribución.</li>
+        <li>\(Ka\): constante de absorción.</li>
+        <li>\(\beta\): constante de eliminación.</li>
+        <li>\(Et\): cantidad eliminada.</li>
+      </ul>
+
+      <h4>Ecuaciones de velocidad</h4>
+      <div class="formula">$$\frac{dQb}{dt}=Ka\cdot Qat-\beta\cdot Qbt$$</div>
+      <div class="formula">$$\frac{dE}{dt}=\beta\cdot Qbt$$</div>
+
+      <h4>Función de Bateman</h4>
+      <div class="formula">$$Cpt=\frac{F\cdot D\cdot Ka}{Vd(Ka-\beta)}(e^{-\beta t}-e^{-Ka t})$$</div>
+
+      <p>Donde \(F\) es la fracción biodisponible, \(D\) la dosis extravasal, \(Ka\) la constante de absorción, \(Vd\) el volumen aparente de distribución y \(\beta\) la constante de eliminación.</p>
+
+      <h4>Determinación de \(\beta\)</h4>
+      <p>La constante de eliminación se determina con los datos de la fase terminal, porque en esa fase predomina el proceso de eliminación.</p>
+
+      <h4>Determinación de \(Ka\) por residuales</h4>
+      <ol>
+        <li>Graficar datos de concentración sanguínea.</li>
+        <li>Identificar la fase terminal.</li>
+        <li>Realizar regresión exponencial de la fase de eliminación.</li>
+        <li>Retroproyectar la ecuación terminal a tiempos iniciales.</li>
+        <li>Calcular residuales: \(Rt=Cpt'-Cpt\).</li>
+        <li>Graficar residuales contra tiempo.</li>
+        <li>Realizar regresión exponencial de residuales.</li>
+        <li>Obtener \(Ka\) desde la pendiente.</li>
+      </ol>
+
+      <h4>Flip-flop</h4>
+      <p>El fenómeno flip-flop ocurre cuando la velocidad de entrada es más lenta que la velocidad de salida, es decir, \(Ka << Ke\). Puede verificarse comparando con una administración intravenosa.</p>
+
+      <h4>Periodo de latencia</h4>
+      <p>El periodo de latencia es el tiempo que demora el fármaco en aparecer en sangre. Puede deberse a liberación, disolución, paso por barreras o vaciamiento gástrico.</p>
+
+      <div class="formula">$$t_0=\frac{\ln(A_0/B_0)}{Ka-\beta}$$</div>
+
+      <h4>Ejemplo oral</h4>
+      <p>Datos de concentración plasmática:</p>
+      <table>
+        <tr><th>Tiempo (h)</th><th>Cpt (mg/L)</th></tr>
+        <tr><td>0.25</td><td>9.0</td></tr>
+        <tr><td>0.5</td><td>15.3</td></tr>
+        <tr><td>1</td><td>22.5</td></tr>
+        <tr><td>2</td><td>26.2</td></tr>
+        <tr><td>4</td><td>22.4</td></tr>
+        <tr><td>8</td><td>13.4</td></tr>
+        <tr><td>12</td><td>8.0</td></tr>
+        <tr><td>24</td><td>1.7</td></tr>
+      </table>
+
+      <p>De la fase terminal:</p>
+      <div class="formula">$$Cpt=37.56e^{-0.129t}$$</div>
+      <ul>
+        <li>\(\beta=0.129\ h^{-1}\)</li>
+        <li>\(t_{1/2}=0.693/0.129=5.37\ h\)</li>
+        <li>\(Ka=1.295\ h^{-1}\)</li>
+        <li>\(t_{1/2a}=0.693/1.295=0.535\ h\)</li>
+        <li>\(Vd_{area}=21.3\ L\) con \(F=0.75\), dosis de 1000 mg y \(ABC=272.34\ mg\cdot h/L\)</li>
+        <li>\(CL=2.76\ L/h=45.9\ mL/min\)</li>
+      </ul>
+
+      <h3>2.3 Modelo abierto de dos compartimentos</h3>
+      <p>Cuando el modelo monocompartimental no permite describir correctamente las concentraciones sanguíneas, se utiliza un modelo bicompartimental. Este modelo incluye un compartimento central y un compartimento periférico. La transferencia entre ambos es bidireccional.</p>
+
+      <h4>Modelo físico</h4>
+      <ul>
+        <li>\(Vc\): volumen del compartimento central.</li>
+        <li>\(Vp\): volumen del compartimento periférico.</li>
+        <li>\(K_{12}\): transferencia del central al periférico.</li>
+        <li>\(K_{21}\): transferencia del periférico al central.</li>
+        <li>\(K_e\): eliminación desde el compartimento central.</li>
+      </ul>
+
+      <h4>Perfil bicompartimental</h4>
+      <p>Inicialmente, la concentración en sangre disminuye rápidamente por distribución hacia tejidos y eliminación simultánea. Luego aparece una fase terminal lineal en papel semilogarítmico, indicando equilibrio de distribución.</p>
+
+      <div class="formula">$$Cpt=A_0e^{-\alpha t}+B_0e^{-\beta t}$$</div>
+
+      <h4>Método de residuos bicompartimental</h4>
+      <ol>
+        <li>Identificar la fase terminal de eliminación.</li>
+        <li>Aplicar regresión exponencial a la fase terminal.</li>
+        <li>Obtener \(Cpt'=B_0e^{-\beta t}\).</li>
+        <li>Calcular concentraciones retroproyectadas.</li>
+        <li>Obtener residuales: \(Rt=Cpt-Cpt'\).</li>
+        <li>Graficar residuales contra tiempo.</li>
+        <li>Aplicar regresión exponencial a los residuales.</li>
+        <li>Obtener \(Rt=A_0e^{-\alpha t}\).</li>
+        <li>Sumar ambas fases para obtener la ecuación explícita.</li>
+      </ol>
+
+      <h4>Constantes híbridas y microconstantes</h4>
+      <p>\(\alpha\) y \(\beta\) son constantes híbridas porque dependen de las microconstantes \(K_{12}\), \(K_{21}\) y \(K_e\).</p>
+
+      <div class="formula">$$K_{21}=\frac{A_0\beta+B_0\alpha}{C_0}$$</div>
+      <div class="formula">$$K_e=\frac{\alpha\beta}{K_{21}}$$</div>
+      <div class="formula">$$K_{12}=\alpha+\beta-K_e-K_{21}$$</div>
+
+      <h4>Parámetros bicompartimentales</h4>
+      <div class="formula">$$t_{1/2\beta}=\frac{0.693}{\beta}$$</div>
+      <div class="formula">$$t_{1/2\alpha}=\frac{0.693}{\alpha}$$</div>
+      <div class="formula">$$Vd_{ext}=\frac{Dosis}{B_0}$$</div>
+      <div class="formula">$$Vd_{area}=\frac{Dosis}{ABC_0^\infty\cdot\beta}$$</div>
+      <div class="formula">$$Vc=\frac{Dosis}{A_0+B_0}$$</div>
+      <div class="formula">$$Vp=Vc\cdot\frac{K_{12}}{K_{21}}$$</div>
+      <div class="formula">$$Vee=Vc\left(1+\frac{K_{12}}{K_{21}}\right)$$</div>
+
+      <p>Relación esperada:</p>
+      <div class="formula">$$Vd_{ext}>Vd_{area}>Vee>Vc$$</div>
+
+      <h4>Ejemplo bicompartimental</h4>
+      <p>Dosis IV rápida de 1200 mg. Datos de concentración:</p>
+      <table>
+        <tr><th>Tiempo (h)</th><th>Conc. (µg/mL)</th></tr>
+        <tr><td>0.5</td><td>144.33</td></tr>
+        <tr><td>0.75</td><td>124.63</td></tr>
+        <tr><td>1</td><td>108.80</td></tr>
+        <tr><td>2</td><td>69.96</td></tr>
+        <tr><td>4</td><td>40.20</td></tr>
+        <tr><td>8</td><td>19.29</td></tr>
+        <tr><td>16</td><td>4.94</td></tr>
+        <tr><td>24</td><td>1.27</td></tr>
+      </table>
+
+      <p>Fase terminal:</p>
+      <div class="formula">$$Cpt'=78.3e^{-0.172t}$$</div>
+
+      <p>Fase residual:</p>
+      <div class="formula">$$Rt=125e^{-1.08t}$$</div>
+
+      <p>Ecuación explícita:</p>
+      <div class="formula">$$Cpt=125e^{-1.08t}+78.3e^{-0.172t}$$</div>
+
+      <ul>
+        <li>\(C_0=125+78.3=203.3\ \mu g/mL\)</li>
+        <li>\(K_{21}=0.52\ h^{-1}\)</li>
+        <li>\(K_e=0.356\ h^{-1}\)</li>
+        <li>\(K_{12}=0.373\ h^{-1}\)</li>
+        <li>\(t_{1/2\beta}=4.03\ h\)</li>
+        <li>\(t_{1/2\alpha}=0.64\ h\)</li>
+        <li>\(Vd_{ext}=15.33\ L\)</li>
+        <li>\(Vd_{area}=11.68\ L\)</li>
+        <li>\(Vc=5.904\ L\)</li>
+        <li>\(Vp=4.227\ L\)</li>
+        <li>\(Vee=10.13\ L\)</li>
+        <li>\(CL=2.009\ L/h=33.48\ mL/min\)</li>
+      </ul>
+
+      <h3>2.4 Modelo bicompartimental en pre-equilibrio</h3>
+      <p>El modelo de pre-equilibrio se utiliza cuando la fase de distribución puede ser obviada por ser muy rápida o porque el muestreo inicia en tiempos relativamente tardíos. En ese caso, la fase de distribución no se observa claramente entre los datos.</p>
+
+      <h4>Criterio de aplicación</h4>
+      <div class="formula">$$\frac{K_{12}+K_{21}}{K_e}>20$$</div>
+
+      <p>Si se cumple esta relación, puede emplearse un modelo más simple:</p>
+      <div class="formula">$$Cpt=B_0e^{-\beta t}$$</div>
+
+      <p>En el modelo de pre-equilibrio, la vida media se determina con la fase terminal, el volumen por extrapolación no difiere mucho del volumen por área y el aclaramiento se mantiene como:</p>
+      <div class="formula">$$CL=Vd\cdot\beta$$</div>
+
+      <h4>Ejemplo de pre-equilibrio</h4>
+      <p>Se obtuvo la fase terminal:</p>
+      <div class="formula">$$Cpt'=95.02e^{-0.08t}$$</div>
+
+      <p>También puede describirse el modelo bicompartimental completo:</p>
+      <div class="formula">$$Cpt=251.21e^{-6.122t}+95.02e^{-0.08t}$$</div>
+
+      <p>Con las microconstantes:</p>
+      <ul>
+        <li>\(K_{21}=1.738\ h^{-1}\)</li>
+        <li>\(K_e=0.2818\ h^{-1}\)</li>
+        <li>\(K_{12}=4.182\ h^{-1}\)</li>
+      </ul>
+
+      <div class="formula">$$\frac{4.182+1.738}{0.2818}=21.01$$</div>
+
+      <p>Como el resultado es mayor que 20, se justifica el uso del modelo de pre-equilibrio.</p>
+
+      <h4>Parámetros del ejemplo</h4>
+      <ul>
+        <li>\(ABC_0^T=1275.52\)</li>
+        <li>\(ABC_T^\infty=25.50\)</li>
+        <li>\(ABC_0^\infty=1301.02\)</li>
+        <li>\(Vd_{area}=11.53\ L\)</li>
+        <li>\(Vd_{extr}=12.63\ L\)</li>
+        <li>\(Vdee=11.81\ L\)</li>
+        <li>\(t_{1/2}=8.66\ h\)</li>
+        <li>\(CL=0.922\ L/h\)</li>
+      </ul>
+    </section>
+
+    <section id="quiz">
+      <h2>Quiz de 100 preguntas</h2>
+      <p class="muted">Preguntas basadas en los modelos y ecuaciones del contenido integrado.</p>
+
+      <div class="card">
+        <div id="quiz-counter"></div>
+        <div class="progress"><div class="bar" id="quiz-bar"></div></div>
+        <h3 id="quiz-question"></h3>
+        <div id="quiz-options"></div>
+        <div class="feedback" id="quiz-feedback"></div>
+
+        <div class="btns">
+          <button class="action secondary" onclick="anteriorPregunta()">Anterior</button>
+          <button class="action primary" onclick="siguientePregunta()">Siguiente</button>
+          <button class="action danger" onclick="reiniciarQuiz()">Reiniciar</button>
+        </div>
+
+        <div id="quiz-score" class="note" style="display:none;margin-top:16px"></div>
+        <div id="quiz-review"></div>
+      </div>
+    </section>
+
+    <section id="problemas">
+      <h2>Problemas prácticos</h2>
+      <p class="muted">Ejercicios numéricos basados en los ejemplos y ecuaciones del contenido.</p>
+      <div id="problem-list" class="problem-list"></div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  Página educativa de farmacocinética lista para GitHub Pages.
+</footer>
+
+<script>
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll("main section").forEach(s=>s.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.target).classList.add("active");
+    renderMath();
+  });
+});
+
+function renderMath(){
+  if(window.MathJax && window.MathJax.typesetPromise){
+    MathJax.typesetPromise();
+  }
+}
+
+const preguntasQuiz = [
+{id:1,pregunta:"¿Qué estudia la farmacocinética?",opciones:["La fabricación del medicamento","La evolución del fármaco dentro del organismo","La forma del envase","La clasificación comercial"],correcta:1,retro:"La farmacocinética describe el movimiento temporal del fármaco en el organismo."},
+{id:2,pregunta:"¿Qué representa ADME?",opciones:["Absorción, distribución, metabolismo y excreción","Área, dosis, metabolismo y eficacia","Absorción, dosis, margen y excreción","Administración, distribución, masa y efecto"],correcta:0,retro:"ADME resume los procesos farmacocinéticos fundamentales."},
+{id:3,pregunta:"En el modelo monocompartimental IV, el cuerpo se considera como:",opciones:["Dos compartimentos","Un solo compartimento","Tres tejidos independientes","Un sitio de absorción"],correcta:1,retro:"El modelo monocompartimental simplifica el organismo como un compartimento único."},
+{id:4,pregunta:"En administración intravenosa, el fármaco se deposita:",opciones:["En el sitio de absorción","Directa y completamente en el organismo","Solo en el intestino","Solo en el compartimento periférico"],correcta:1,retro:"La vía IV no requiere fase de absorción."},
+{id:5,pregunta:"La ecuación del modelo monocompartimental IV es:",opciones:["Cpt=B0e^{-βt}","Cpt=A0e^{-αt}+B0e^{-βt}","Cpt=FDKa","Cpt=CL/Vd"],correcta:0,retro:"El modelo monocompartimental IV es monoexponencial."},
+{id:6,pregunta:"En Cpt=B0e^{-βt}, B0 representa:",opciones:["Concentración inicial en equilibrio","Biodisponibilidad","Constante de absorción","Aclaramiento renal"],correcta:0,retro:"B0 es la concentración inicial extrapolada en equilibrio."},
+{id:7,pregunta:"En el modelo monocompartimental IV, β representa:",opciones:["Constante de absorción","Constante de eliminación","Volumen periférico","Área bajo la curva"],correcta:1,retro:"β es la constante de velocidad de eliminación."},
+{id:8,pregunta:"La vida media de eliminación se calcula como:",opciones:["t1/2=0.693/β","t1/2=β/0.693","t1/2=Dosis/B0","t1/2=AUC/CL"],correcta:0,retro:"Para cinética de primer orden, t1/2=0.693/β."},
+{id:9,pregunta:"En papel semilogarítmico, un modelo monocompartimental produce:",opciones:["Una línea recta","Una parábola cerrada","Una línea vertical","Un círculo"],correcta:0,retro:"La transformación logarítmica linealiza la ecuación monoexponencial."},
+{id:10,pregunta:"El volumen aparente de distribución se define como:",opciones:["Cantidad en cuerpo/concentración plasmática","AUC/dosis","Concentración/dosis","Tiempo/concentración"],correcta:0,retro:"Vd=Qbt/Cpt."},
+{id:11,pregunta:"El método de balance de masas para Vd usa:",opciones:["Vd=(Dosis-Et)/Cpt","Vd=Dosis/B0","Vd=D/AUCβ","Vd=CL/β"],correcta:0,retro:"Balance de masas usa la cantidad remanente en el organismo."},
+{id:12,pregunta:"El método por extrapolación para Vd usa:",opciones:["Vd=Dosis/B0","Vd=(Dosis-Et)/Cpt","Vd=Cpt/Dosis","Vd=β/AUC"],correcta:0,retro:"Se utiliza B0 obtenido por regresión."},
+{id:13,pregunta:"El método de área para Vd se expresa como:",opciones:["Vd=D/(ABC0∞×β)","Vd=ABC×β","Vd=B0/Dosis","Vd=Ka/β"],correcta:0,retro:"El método de área es modelo independiente."},
+{id:14,pregunta:"El ABC representa:",opciones:["Área bajo la curva concentración-tiempo","Absorción básica central","Aclaramiento biliar corregido","Área biológica constante"],correcta:0,retro:"ABC o AUC mide exposición sistémica."},
+{id:15,pregunta:"La fórmula de un trapecio entre t1 y t2 es:",opciones:["(C1+C2)/2×(t2-t1)","C1-C2/t","C2/C1","Dosis/B0"],correcta:0,retro:"Esa es la base del método trapezoidal."},
+{id:16,pregunta:"El área terminal hasta infinito se calcula como:",opciones:["Cn/β","β/Cn","Cn×β","Dosis/Cn"],correcta:0,retro:"ABC terminal=Cn/β."},
+{id:17,pregunta:"El aclaramiento se define como:",opciones:["Volumen hipotético depurado por unidad de tiempo","Cantidad total administrada","Tiempo al pico","Volumen del envase"],correcta:0,retro:"CL expresa eficiencia de eliminación como volumen/tiempo."},
+{id:18,pregunta:"Una ecuación de aclaramiento es:",opciones:["CL=Vd×β","CL=Vd/β","CL=B0×Dosis","CL=Ka−β"],correcta:0,retro:"CL se relaciona con Vd y β."},
+{id:19,pregunta:"Otra forma de calcular CL en IV es:",opciones:["CL=Dosis/ABC0∞","CL=ABC/Dosis","CL=C0/Dosis","CL=Ka/β"],correcta:0,retro:"Es el método modelo independiente."},
+{id:20,pregunta:"El aclaramiento total puede componerse de:",opciones:["Renal, metabólico, biliar y otros","Solo absorción","Solo distribución","Solo liberación"],correcta:0,retro:"El aclaramiento tiene propiedades aditivas."},
+{id:21,pregunta:"Si Vd aumenta y CL permanece constante, la vida media tiende a:",opciones:["Aumentar","Disminuir","Ser cero","No existir"],correcta:0,retro:"t1/2=Vd×0.693/CL."},
+{id:22,pregunta:"Si CL aumenta y Vd permanece constante, la vida media tiende a:",opciones:["Disminuir","Aumentar","Hacerse infinita","No cambiar jamás"],correcta:0,retro:"Mayor aclaramiento reduce la vida media."},
+{id:23,pregunta:"En el ejemplo IV, la ecuación fue:",opciones:["Cpt=1.663e^{-0.219t}","Cpt=37.56e^{-0.129t}","Cpt=125e^{-1.08t}","Cpt=95.02e^{-0.08t}"],correcta:0,retro:"Ese fue el modelo mono IV del ejemplo."},
+{id:24,pregunta:"Con β=0.219 h⁻¹, la vida media es aproximadamente:",opciones:["3.16 h","5.37 h","8.66 h","0.535 h"],correcta:0,retro:"0.693/0.219=3.16 h."},
+{id:25,pregunta:"En el ejemplo IV, Vd por extrapolación fue:",opciones:["45.1 L","21.3 L","10.13 L","2.76 L"],correcta:0,retro:"75/1.663=45.1 L."},
+{id:26,pregunta:"En el ejemplo IV, CL fue:",opciones:["9.60 L/h","2.76 L/h","0.922 L/h","33.48 L/h"],correcta:0,retro:"CL=75/7.815=9.60 L/h."},
+{id:27,pregunta:"La administración extravasal incluye:",opciones:["Liberación y absorción","Solo inyección directa","Solo distribución instantánea","Solo eliminación biliar"],correcta:0,retro:"La vía extravasal requiere entrada desde un sitio de absorción."},
+{id:28,pregunta:"En el modelo oral, Qat representa:",opciones:["Cantidad en el sitio de absorción","Cantidad eliminada","Volumen central","Aclaramiento"],correcta:0,retro:"Qat está antes del compartimento central."},
+{id:29,pregunta:"En el modelo oral, Qbt representa:",opciones:["Cantidad en el cuerpo","Cantidad en el sitio de absorción","Biodisponibilidad","AUC terminal"],correcta:0,retro:"Qbt es cantidad en el compartimento central/cuerpo."},
+{id:30,pregunta:"En el modelo oral, Ka representa:",opciones:["Constante de absorción","Constante de eliminación","Volumen central","Vida media"],correcta:0,retro:"Ka controla la entrada al compartimento central."},
+{id:31,pregunta:"En el modelo oral, β representa:",opciones:["Constante de eliminación","Fracción biodisponible","Dosis","Tiempo de latencia"],correcta:0,retro:"β controla la salida del cuerpo."},
+{id:32,pregunta:"La función de Bateman incluye:",opciones:["Absorción y eliminación","Solo eliminación","Solo distribución periférica","Solo metabolismo hepático"],correcta:0,retro:"La función de Bateman combina entrada y salida."},
+{id:33,pregunta:"En Bateman, F representa:",opciones:["Fracción biodisponible","Fase final","Flujo periférico","Frecuencia cardíaca"],correcta:0,retro:"F corrige la dosis que alcanza circulación sistémica."},
+{id:34,pregunta:"En Bateman, D representa:",opciones:["Dosis extravasal","Distribución","Depuración","Densidad"],correcta:0,retro:"D es la dosis administrada por vía extravasal."},
+{id:35,pregunta:"B0 en el modelo oral debe interpretarse como:",opciones:["Artefacto matemático","Concentración real a t=0","Volumen renal","Tiempo de absorción"],correcta:0,retro:"En vía oral B0 no es concentración real inicial."},
+{id:36,pregunta:"La fase terminal oral se usa para determinar:",opciones:["β","Ka directamente sin residuos","F exclusivamente","Vp"],correcta:0,retro:"En la fase terminal predomina eliminación."},
+{id:37,pregunta:"El método de residuales oral permite determinar:",opciones:["Ka","Vee","K12","Vc únicamente"],correcta:0,retro:"Los residuales de la fase ascendente se usan para Ka."},
+{id:38,pregunta:"En residuales orales, se calcula:",opciones:["Rt=Cpt'-Cpt","Rt=Cpt+Cpt'","Rt=Dosis/Cpt","Rt=CL/Vd"],correcta:0,retro:"Se resta la concentración experimental de la retroproyectada."},
+{id:39,pregunta:"El fenómeno flip-flop ocurre cuando:",opciones:["Ka<<Ke","Ka=∞","CL=0","Vd=0"],correcta:0,retro:"La entrada es más lenta que la salida."},
+{id:40,pregunta:"El periodo de latencia es:",opciones:["Tiempo que demora el fármaco en aparecer en sangre","Tiempo para eliminar toda la dosis","Tiempo de fabricación","Tiempo de envasado"],correcta:0,retro:"t0 retrasa la aparición de concentraciones plasmáticas."},
+{id:41,pregunta:"Una causa de latencia puede ser:",opciones:["Liberación o disolución","Aumento de C0","Reducción de Vd a cero","Ausencia de dosis"],correcta:0,retro:"La forma farmacéutica puede retrasar la entrada."},
+{id:42,pregunta:"La ecuación con latencia ajusta el tiempo como:",opciones:["t−t0","t+t0 siempre","t/t0","t×t0"],correcta:0,retro:"Se desplaza el tiempo por el periodo de latencia."},
+{id:43,pregunta:"En el ejemplo oral, β fue:",opciones:["0.129 h⁻¹","1.295 h⁻¹","0.219 h⁻¹","6.122 h⁻¹"],correcta:0,retro:"La fase terminal oral dio β=0.129 h⁻¹."},
+{id:44,pregunta:"En el ejemplo oral, Ka fue:",opciones:["1.295 h⁻¹","0.129 h⁻¹","0.172 h⁻¹","0.08 h⁻¹"],correcta:0,retro:"Ka se obtuvo por regresión de residuales."},
+{id:45,pregunta:"Con β=0.129 h⁻¹, t1/2 es:",opciones:["5.37 h","3.16 h","0.535 h","4.03 h"],correcta:0,retro:"0.693/0.129=5.37 h."},
+{id:46,pregunta:"Con Ka=1.295 h⁻¹, t1/2 de absorción es:",opciones:["0.535 h","5.37 h","8.66 h","3.16 h"],correcta:0,retro:"0.693/1.295=0.535 h."},
+{id:47,pregunta:"En el ejemplo oral, Vdarea fue:",opciones:["21.3 L","45.1 L","11.68 L","10.13 L"],correcta:0,retro:"Con F=0.75, dosis=1000 mg y AUC=272.34, Vd=21.3 L."},
+{id:48,pregunta:"En el ejemplo oral, CL fue:",opciones:["2.76 L/h","9.60 L/h","2.009 L/h","0.922 L/h"],correcta:0,retro:"CL=F×Dosis/AUC=2.76 L/h."},
+{id:49,pregunta:"El modelo bicompartimental tiene:",opciones:["Compartimento central y periférico","Solo un compartimento","Solo sitio de absorción","Cuatro compartimentos obligatorios"],correcta:0,retro:"El modelo abierto de dos compartimentos separa central y periférico."},
+{id:50,pregunta:"K12 representa:",opciones:["Transferencia central a periférico","Transferencia periférico a central","Eliminación desde central","Biodisponibilidad"],correcta:0,retro:"K12 va del compartimento 1 al 2."},
+{id:51,pregunta:"K21 representa:",opciones:["Transferencia periférico a central","Transferencia central a periférico","Aclaramiento","Absorción"],correcta:0,retro:"K21 retorna desde el compartimento periférico al central."},
+{id:52,pregunta:"Ke en bicompartimental representa:",opciones:["Eliminación desde el compartimento central","Absorción oral","Distribución a tejidos","Biodisponibilidad"],correcta:0,retro:"Ke es eliminación desde el central al espacio de acumulación."},
+{id:53,pregunta:"La ecuación bicompartimental es:",opciones:["Cpt=A0e^{-αt}+B0e^{-βt}","Cpt=B0e^{-βt}","Cpt=B0(e^{-βt}-e^{-Kat})","CL=D/AUC"],correcta:0,retro:"El bicompartimental es biexponencial."},
+{id:54,pregunta:"La fase alfa se asocia con:",opciones:["Distribución","Eliminación terminal","Biodisponibilidad","Latencia"],correcta:0,retro:"α describe la fase rápida de distribución."},
+{id:55,pregunta:"La fase beta se asocia con:",opciones:["Eliminación terminal","Liberación farmacéutica","Absorción inicial","Tmax"],correcta:0,retro:"β domina la fase terminal."},
+{id:56,pregunta:"El método de residuos bicompartimental separa:",opciones:["Distribución y eliminación","Liberación y disolución","Renal y biliar solamente","Dosis y volumen"],correcta:0,retro:"Permite separar las dos fases exponenciales."},
+{id:57,pregunta:"En bicompartimental, los residuales se calculan como:",opciones:["Rt=Cpt−Cpt'","Rt=Cpt'+Cpt","Rt=Dosis/Cpt","Rt=Ka/β"],correcta:0,retro:"Se resta la fase terminal retroproyectada al dato experimental."},
+{id:58,pregunta:"A0 y B0 son:",opciones:["Interceptos de las fases","Constantes de aclaramiento","Dosis parciales","Volúmenes anatómicos"],correcta:0,retro:"Son coeficientes de los términos exponenciales."},
+{id:59,pregunta:"C0 en bicompartimental es:",opciones:["A0+B0","A0−B0","A0/B0","B0/A0"],correcta:0,retro:"A tiempo cero, ambos exponentes valen 1."},
+{id:60,pregunta:"Las constantes α y β se denominan híbridas porque:",opciones:["Se relacionan con K12, K21 y Ke","Son volúmenes","Son dosis","No tienen unidades"],correcta:0,retro:"Dependen de las microconstantes del modelo."},
+{id:61,pregunta:"La fórmula para K21 es:",opciones:["(A0β+B0α)/C0","αβ/K21","α+β−Ke−K21","Dosis/C0"],correcta:0,retro:"K21 usa interceptos y constantes híbridas."},
+{id:62,pregunta:"La fórmula para Ke es:",opciones:["αβ/K21","K21/αβ","A0+B0","Dosis/B0"],correcta:0,retro:"Ke=αβ/K21."},
+{id:63,pregunta:"La fórmula para K12 es:",opciones:["α+β−Ke−K21","A0β+B0α","Dosis/AUC","C0/Dosis"],correcta:0,retro:"K12 se obtiene completando la suma de constantes."},
+{id:64,pregunta:"La vida media de distribución es:",opciones:["0.693/α","0.693/β","β/0.693","Dosis/C0"],correcta:0,retro:"La fase alfa tiene su propia semivida."},
+{id:65,pregunta:"La vida media de eliminación bicompartimental es:",opciones:["0.693/β","0.693/α","AUC/Dosis","Ka/β"],correcta:0,retro:"La fase beta determina t1/2 de eliminación terminal."},
+{id:66,pregunta:"Vc se calcula como:",opciones:["Dosis/C0","Dosis/B0","Dosis/AUCβ","Vc×K12/K21"],correcta:0,retro:"Vc usa la concentración inicial central."},
+{id:67,pregunta:"Vp se calcula como:",opciones:["Vc×K12/K21","Vc×K21/K12 siempre","Dosis/C0","AUC/CL"],correcta:0,retro:"Vp depende de la relación K12/K21."},
+{id:68,pregunta:"Vee se calcula como:",opciones:["Vc(1+K12/K21)","Dosis/B0","F×D/AUC","0.693/β"],correcta:0,retro:"Vee es el volumen en equilibrio de distribución."},
+{id:69,pregunta:"La relación esperada en bicompartimental es:",opciones:["Vdext>Vdarea>Vee>Vc","Vc>Vee>Vdarea>Vdext","Todos iguales siempre","Vdarea=0"],correcta:0,retro:"Esa relación orienta la interpretación del modelo."},
+{id:70,pregunta:"En el ejemplo bicompartimental, la ecuación fue:",opciones:["Cpt=125e^{-1.08t}+78.3e^{-0.172t}","Cpt=1.663e^{-0.219t}","Cpt=37.56e^{-0.129t}","Cpt=95.02e^{-0.08t}"],correcta:0,retro:"Esa es la ecuación biexponencial del ejemplo."},
+{id:71,pregunta:"En el ejemplo bicompartimental, β fue:",opciones:["0.172 h⁻¹","1.08 h⁻¹","0.129 h⁻¹","0.08 h⁻¹"],correcta:0,retro:"La fase terminal dio β=0.172 h⁻¹."},
+{id:72,pregunta:"En el ejemplo bicompartimental, α fue:",opciones:["1.08 h⁻¹","0.172 h⁻¹","0.219 h⁻¹","6.122 h⁻¹"],correcta:0,retro:"La regresión de residuales dio α=1.08 h⁻¹."},
+{id:73,pregunta:"En el ejemplo bicompartimental, C0 fue:",opciones:["203.3 µg/mL","78.3 µg/mL","125 µg/mL","144.33 µg/mL"],correcta:0,retro:"C0=A0+B0=125+78.3."},
+{id:74,pregunta:"En el ejemplo bicompartimental, K21 fue:",opciones:["0.52 h⁻¹","0.356 h⁻¹","0.373 h⁻¹","2.009 h⁻¹"],correcta:0,retro:"K21 se calculó como 0.52 h⁻¹."},
+{id:75,pregunta:"En el ejemplo bicompartimental, Ke fue:",opciones:["0.356 h⁻¹","0.52 h⁻¹","0.373 h⁻¹","1.08 h⁻¹"],correcta:0,retro:"Ke=αβ/K21."},
+{id:76,pregunta:"En el ejemplo bicompartimental, K12 fue:",opciones:["0.373 h⁻¹","0.52 h⁻¹","0.356 h⁻¹","0.172 h⁻¹"],correcta:0,retro:"K12=α+β−Ke−K21."},
+{id:77,pregunta:"En el ejemplo bicompartimental, t1/2β fue:",opciones:["4.03 h","0.64 h","3.16 h","8.66 h"],correcta:0,retro:"0.693/0.172=4.03 h."},
+{id:78,pregunta:"En el ejemplo bicompartimental, t1/2α fue:",opciones:["0.64 h","4.03 h","5.37 h","8.66 h"],correcta:0,retro:"0.693/1.08=0.64 h."},
+{id:79,pregunta:"En el ejemplo bicompartimental, Vc fue:",opciones:["5.904 L","10.13 L","11.68 L","15.33 L"],correcta:0,retro:"Vc=Dosis/C0=1200/203.3."},
+{id:80,pregunta:"En el ejemplo bicompartimental, Vp fue:",opciones:["4.227 L","5.904 L","10.13 L","15.33 L"],correcta:0,retro:"Vp=Vc×K12/K21."},
+{id:81,pregunta:"En el ejemplo bicompartimental, Vee fue:",opciones:["10.13 L","5.904 L","15.33 L","21.3 L"],correcta:0,retro:"Vee=Vc+Vp."},
+{id:82,pregunta:"En el ejemplo bicompartimental, CL fue:",opciones:["2.009 L/h","9.60 L/h","2.76 L/h","0.922 L/h"],correcta:0,retro:"CL=Dosis/ABC=2.009 L/h."},
+{id:83,pregunta:"El modelo de pre-equilibrio se usa cuando:",opciones:["La fase de distribución es muy rápida","No hay eliminación","No hay datos terminales","La dosis es cero"],correcta:0,retro:"La distribución puede obviarse si ocurre muy rápidamente."},
+{id:84,pregunta:"En pre-equilibrio, puede no observarse la fase de distribución porque:",opciones:["El muestreo inicia tarde","No existe fármaco","CL es negativo","El modelo no tiene concentración"],correcta:0,retro:"Si el muestreo empieza tarde, se pierde la fase inicial."},
+{id:85,pregunta:"El criterio de pre-equilibrio es:",opciones:["(K12+K21)/Ke > 20","Ka/β < 1","AUC=0","Vd=CL"],correcta:0,retro:"Ese cociente indica distribución suficientemente rápida."},
+{id:86,pregunta:"El modelo simplificado de pre-equilibrio usa:",opciones:["Cpt=B0e^{-βt}","Cpt=A0e^{-αt}+B0e^{-βt} siempre","Cpt=FDKa","Cpt=0"],correcta:0,retro:"Se emplea la fase terminal como modelo simple."},
+{id:87,pregunta:"En pre-equilibrio, la vida media se determina con:",opciones:["Fase terminal","Fase alfa exclusivamente","Dosis de carga","Ka solamente"],correcta:0,retro:"Se usa β de la fase terminal."},
+{id:88,pregunta:"En pre-equilibrio, CL se calcula como:",opciones:["Vd×β","Ka×F","A0+B0","C0/Dosis"],correcta:0,retro:"Se mantiene CL=Vd×β."},
+{id:89,pregunta:"En el ejemplo de pre-equilibrio, la fase terminal fue:",opciones:["Cpt'=95.02e^{-0.08t}","Cpt=1.663e^{-0.219t}","Cpt=37.56e^{-0.129t}","Cpt=78.3e^{-0.172t}"],correcta:0,retro:"La ecuación terminal fue 95.02e^{-0.08t}."},
+{id:90,pregunta:"En el ejemplo de pre-equilibrio, la ecuación bicompartimental completa fue:",opciones:["251.21e^{-6.122t}+95.02e^{-0.08t}","125e^{-1.08t}+78.3e^{-0.172t}","1.663e^{-0.219t}","37.56e^{-0.129t}"],correcta:0,retro:"Esa ecuación incluye distribución y eliminación."},
+{id:91,pregunta:"En el ejemplo pre-equilibrio, K12 fue:",opciones:["4.182 h⁻¹","1.738 h⁻¹","0.2818 h⁻¹","0.08 h⁻¹"],correcta:0,retro:"K12=4.182 h⁻¹."},
+{id:92,pregunta:"En el ejemplo pre-equilibrio, K21 fue:",opciones:["1.738 h⁻¹","4.182 h⁻¹","0.2818 h⁻¹","6.122 h⁻¹"],correcta:0,retro:"K21=1.738 h⁻¹."},
+{id:93,pregunta:"En el ejemplo pre-equilibrio, Ke fue:",opciones:["0.2818 h⁻¹","4.182 h⁻¹","1.738 h⁻¹","0.08 h⁻¹"],correcta:0,retro:"Ke=0.2818 h⁻¹."},
+{id:94,pregunta:"El cociente de pre-equilibrio del ejemplo fue:",opciones:["21.01","3.16","5.37","0.535"],correcta:0,retro:"(4.182+1.738)/0.2818=21.01."},
+{id:95,pregunta:"Como 21.01 es mayor que 20, se concluye que:",opciones:["Puede usarse pre-equilibrio","No hay eliminación","El modelo oral es obligatorio","El ABC es cero"],correcta:0,retro:"Cumple el criterio de simplificación."},
+{id:96,pregunta:"En el ejemplo pre-equilibrio, ABC total fue:",opciones:["1301.02","597.36","272.34","7.815"],correcta:0,retro:"ABC total=1275.52+25.50=1301.02."},
+{id:97,pregunta:"En el ejemplo pre-equilibrio, Vdarea fue:",opciones:["11.53 L","12.63 L","11.81 L","21.3 L"],correcta:0,retro:"Vdarea=11.53 L."},
+{id:98,pregunta:"En el ejemplo pre-equilibrio, Vdextr fue:",opciones:["12.63 L","11.53 L","10.13 L","45.1 L"],correcta:0,retro:"Vd por extrapolación fue 12.63 L."},
+{id:99,pregunta:"En el ejemplo pre-equilibrio, t1/2 fue:",opciones:["8.66 h","4.03 h","5.37 h","3.16 h"],correcta:0,retro:"t1/2=0.693/0.08=8.66 h."},
+{id:100,pregunta:"En el ejemplo pre-equilibrio, CL fue:",opciones:["0.922 L/h","2.009 L/h","2.76 L/h","9.60 L/h"],correcta:0,retro:"CL=0.922 L/h."}
+];
+
+let actual=0;
+let respuestas=Array(preguntasQuiz.length).fill(null);
+
+function renderPregunta(){
+  const q=preguntasQuiz[actual];
+  document.getElementById("quiz-counter").innerHTML=`<span class="pill">Pregunta ${actual+1} de ${preguntasQuiz.length}</span>`;
+  document.getElementById("quiz-bar").style.width=`${((actual+1)/preguntasQuiz.length)*100}%`;
+  document.getElementById("quiz-question").innerHTML=`${q.id}. ${q.pregunta}`;
+
+  const box=document.getElementById("quiz-options");
+  box.innerHTML="";
+  q.opciones.forEach((op,i)=>{
+    const b=document.createElement("button");
+    b.className="option";
+    b.innerHTML=`<b>${String.fromCharCode(65+i)}.</b> ${op}`;
+    if(respuestas[actual]===i)b.classList.add("selected");
+    b.onclick=()=>seleccionar(i);
+    box.appendChild(b);
+  });
+
+  document.getElementById("quiz-feedback").style.display="none";
+  renderMath();
+}
+
+function seleccionar(i){
+  respuestas[actual]=i;
+  const q=preguntasQuiz[actual];
+
+  document.querySelectorAll("#quiz-options .option").forEach((b,idx)=>{
+    b.classList.remove("selected","correct","incorrect");
+    if(idx===q.correcta)b.classList.add("correct");
+    if(idx===i && idx!==q.correcta)b.classList.add("incorrect");
+    if(idx===i)b.classList.add("selected");
+  });
+
+  const f=document.getElementById("quiz-feedback");
+  f.style.display="block";
+  f.innerHTML=`<b>${i===q.correcta?"Correcto.":"Incorrecto."}</b> ${q.retro}`;
+}
+
+function anteriorPregunta(){
+  if(actual>0){
+    actual--;
+    renderPregunta();
+  }
+}
+
+function siguientePregunta(){
+  if(actual<preguntasQuiz.length-1){
+    actual++;
+    renderPregunta();
+  }else{
+    finalizarQuiz();
+  }
+}
+
+function finalizarQuiz(){
+  let ok=0;
+  preguntasQuiz.forEach((q,i)=>{if(respuestas[i]===q.correcta)ok++;});
+
+  const score=document.getElementById("quiz-score");
+  score.style.display="block";
+  score.innerHTML=`<h3>Resultado final</h3><p><b>${ok}/100 respuestas correctas.</b></p>`;
+
+  const review=document.getElementById("quiz-review");
+  review.innerHTML="<h3>Revisión de respuestas</h3>";
+
+  preguntasQuiz.forEach((q,i)=>{
+    const r=respuestas[i];
+    const correct=r===q.correcta;
+    review.innerHTML+=`
+      <details>
+        <summary>Pregunta ${i+1}: <span class="${correct?"success":"error"}">${correct?"Correcta":"Incorrecta"}</span></summary>
+        <p><b>Pregunta:</b> ${q.pregunta}</p>
+        <p><b>Tu respuesta:</b> ${r===null?"Sin responder":q.opciones[r]}</p>
+        <p><b>Respuesta correcta:</b> ${q.opciones[q.correcta]}</p>
+        <p><b>Retroalimentación:</b> ${q.retro}</p>
+      </details>
+    `;
+  });
+}
+
+function reiniciarQuiz(){
+  actual=0;
+  respuestas=Array(preguntasQuiz.length).fill(null);
+  document.getElementById("quiz-score").style.display="none";
+  document.getElementById("quiz-review").innerHTML="";
+  renderPregunta();
+}
+
+const problemasPracticos=[
+{id:1,titulo:"Vida media de eliminación IV",enunciado:"Calcule la vida media si β=0.219 h⁻¹.",formula:"$$t_{1/2}=0.693/\\beta$$",respuestaCorrecta:3.16,tolerancia:.03,unidad:"h",solucion:"t1/2=0.693/0.219=3.16 h."},
+{id:2,titulo:"Vd por extrapolación",enunciado:"Una dosis IV de 75 mg produce B0=1.663 mg/L. Calcule Vd.",formula:"$$Vd=Dosis/B_0$$",respuestaCorrecta:45.1,tolerancia:.1,unidad:"L",solucion:"Vd=75/1.663=45.1 L."},
+{id:3,titulo:"Aclaramiento por ABC",enunciado:"Una dosis IV de 75 mg tiene ABC0∞=7.815 mg·h/L. Calcule CL.",formula:"$$CL=Dosis/ABC_0^\\infty$$",respuestaCorrecta:9.60,tolerancia:.05,unidad:"L/h",solucion:"CL=75/7.815=9.60 L/h."},
+{id:4,titulo:"Conversión de CL",enunciado:"Convierta 9.60 L/h a mL/min.",formula:"$$CL_{mL/min}=CL_{L/h}\\times1000/60$$",respuestaCorrecta:160,tolerancia:1,unidad:"mL/min",solucion:"9.60×1000/60=160 mL/min."},
+{id:5,titulo:"Área terminal",enunciado:"Si Cn=0.05 mg/L y β=0.219 h⁻¹, calcule ABC terminal.",formula:"$$ABC_n^\\infty=C_n/\\beta$$",respuestaCorrecta:.228,tolerancia:.005,unidad:"mg·h/L",solucion:"ABC=0.05/0.219=0.228 mg·h/L."},
+{id:6,titulo:"Concentración a 10 horas",enunciado:"Use Cpt=1.663e^(-0.219t). Calcule Cpt a las 10 h.",formula:"$$Cpt=1.663e^{-0.219(10)}$$",respuestaCorrecta:.186,tolerancia:.005,unidad:"mg/L",solucion:"Cpt=1.663e^-2.19=0.186 mg/L."},
+{id:7,titulo:"Vida media de eliminación oral",enunciado:"En el ejemplo oral, β=0.129 h⁻¹. Calcule t1/2.",formula:"$$t_{1/2}=0.693/0.129$$",respuestaCorrecta:5.37,tolerancia:.03,unidad:"h",solucion:"t1/2=0.693/0.129=5.37 h."},
+{id:8,titulo:"Semivida de absorción",enunciado:"Si Ka=1.295 h⁻¹, calcule la semivida de absorción.",formula:"$$t_{1/2a}=0.693/K_a$$",respuestaCorrecta:.535,tolerancia:.005,unidad:"h",solucion:"t1/2a=0.693/1.295=0.535 h."},
+{id:9,titulo:"Vd oral con biodisponibilidad",enunciado:"F=0.75, Dosis=1000 mg, ABC=272.34 mg·h/L y β=0.129 h⁻¹. Calcule Vdarea.",formula:"$$Vd=FD/(ABC\\cdot\\beta)$$",respuestaCorrecta:21.35,tolerancia:.1,unidad:"L",solucion:"Vd=(0.75×1000)/(272.34×0.129)=21.35 L."},
+{id:10,titulo:"CL oral con biodisponibilidad",enunciado:"F=0.75, Dosis=1000 mg y ABC=272.34 mg·h/L. Calcule CL.",formula:"$$CL=FD/ABC$$",respuestaCorrecta:2.75,tolerancia:.03,unidad:"L/h",solucion:"CL=(0.75×1000)/272.34=2.75 L/h."},
+{id:11,titulo:"C0 bicompartimental",enunciado:"En el modelo bicompartimental, A0=125 µg/mL y B0=78.3 µg/mL. Calcule C0.",formula:"$$C_0=A_0+B_0$$",respuestaCorrecta:203.3,tolerancia:.2,unidad:"µg/mL",solucion:"C0=125+78.3=203.3 µg/mL."},
+{id:12,titulo:"Vc bicompartimental",enunciado:"Dosis=1200 mg y C0=203.3 mg/L. Calcule Vc.",formula:"$$Vc=Dosis/C_0$$",respuestaCorrecta:5.90,tolerancia:.05,unidad:"L",solucion:"Vc=1200/203.3=5.90 L."},
+{id:13,titulo:"Ke bicompartimental",enunciado:"Con α=1.08 h⁻¹, β=0.172 h⁻¹ y K21=0.52 h⁻¹, calcule Ke.",formula:"$$K_e=\\alpha\\beta/K_{21}$$",respuestaCorrecta:.357,tolerancia:.01,unidad:"h⁻¹",solucion:"Ke=(1.08×0.172)/0.52=0.357 h⁻¹."},
+{id:14,titulo:"K12 bicompartimental",enunciado:"Con α=1.08, β=0.172, Ke=0.356 y K21=0.52 h⁻¹, calcule K12.",formula:"$$K_{12}=\\alpha+\\beta-K_e-K_{21}$$",respuestaCorrecta:.376,tolerancia:.01,unidad:"h⁻¹",solucion:"K12=1.08+0.172−0.356−0.52=0.376 h⁻¹."},
+{id:15,titulo:"Vida media beta bicompartimental",enunciado:"Calcule t1/2β si β=0.172 h⁻¹.",formula:"$$t_{1/2\\beta}=0.693/\\beta$$",respuestaCorrecta:4.03,tolerancia:.03,unidad:"h",solucion:"t1/2β=0.693/0.172=4.03 h."},
+{id:16,titulo:"Vida media alfa bicompartimental",enunciado:"Calcule t1/2α si α=1.08 h⁻¹.",formula:"$$t_{1/2\\alpha}=0.693/\\alpha$$",respuestaCorrecta:.64,tolerancia:.02,unidad:"h",solucion:"t1/2α=0.693/1.08=0.64 h."},
+{id:17,titulo:"Vee bicompartimental",enunciado:"Si Vc=5.904 L, K12=0.3726 h⁻¹ y K21=0.5205 h⁻¹, calcule Vee.",formula:"$$Vee=Vc(1+K_{12}/K_{21})$$",respuestaCorrecta:10.13,tolerancia:.05,unidad:"L",solucion:"Vee=5.904(1+0.3726/0.5205)=10.13 L."},
+{id:18,titulo:"Criterio de pre-equilibrio",enunciado:"Calcule (K12+K21)/Ke si K12=4.182, K21=1.738 y Ke=0.2818 h⁻¹.",formula:"$$\\frac{K_{12}+K_{21}}{K_e}$$",respuestaCorrecta:21.01,tolerancia:.05,unidad:"sin unidad",solucion:"(4.182+1.738)/0.2818=21.01."},
+{id:19,titulo:"Vida media en pre-equilibrio",enunciado:"Si β=0.08 h⁻¹, calcule t1/2.",formula:"$$t_{1/2}=0.693/0.08$$",respuestaCorrecta:8.66,tolerancia:.05,unidad:"h",solucion:"t1/2=0.693/0.08=8.66 h."},
+{id:20,titulo:"CL en pre-equilibrio",enunciado:"Con dosis=1200 mg y ABC total=1301.02 mg·h/L, calcule CL.",formula:"$$CL=Dosis/ABC$$",respuestaCorrecta:.922,tolerancia:.005,unidad:"L/h",solucion:"CL=1200/1301.02=0.922 L/h."}
+];
+
+function renderProblemas(){
+  const list=document.getElementById("problem-list");
+  list.innerHTML="";
+  problemasPracticos.forEach((p,i)=>{
+    const div=document.createElement("div");
+    div.className="problem";
+    div.innerHTML=`
+      <h3>${p.id}. ${p.titulo}</h3>
+      <p>${p.enunciado}</p>
+      <div class="formula">${p.formula}</div>
+      <label><b>Tu respuesta (${p.unidad}):</b></label>
+      <input type="number" step="any" id="prob-${i}" placeholder="Escribe tu resultado numérico">
+      <div class="btns">
+        <button class="action primary" onclick="verificarProblema(${i})">Verificar</button>
+      </div>
+      <div class="feedback" id="prob-feed-${i}"></div>
+      <details>
+        <summary>Ver solución</summary>
+        <p>${p.solucion}</p>
+      </details>
+    `;
+    list.appendChild(div);
+  });
+  renderMath();
+}
+
+function verificarProblema(i){
+  const p=problemasPracticos[i];
+  const val=Number(document.getElementById(`prob-${i}`).value);
+  const feed=document.getElementById(`prob-feed-${i}`);
+  feed.style.display="block";
+
+  if(Number.isNaN(val)){
+    feed.innerHTML=`<span class="error">Ingrese un número válido.</span>`;
+    return;
+  }
+
+  const dif=Math.abs(val-p.respuestaCorrecta);
+  if(dif<=p.tolerancia){
+    feed.innerHTML=`<span class="success">Correcto.</span> Resultado esperado: ${p.respuestaCorrecta} ${p.unidad}.`;
+  }else{
+    feed.innerHTML=`<span class="error">Incorrecto.</span> Resultado esperado: ${p.respuestaCorrecta} ${p.unidad}. Diferencia: ${dif.toFixed(4)}.`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  renderPregunta();
+  renderProblemas();
+  renderMath();
+});
+</script>
+</body>
+</html>
